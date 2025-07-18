@@ -53,7 +53,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="pt-24 sm:pt-36 pb-16 bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 min-h-screen flex flex-col items-center relative overflow-hidden">
+    <section id="home" className="pt-36 sm:pt-40 md:pt-48 pb-16 bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 min-h-screen flex flex-col items-center relative overflow-hidden">
       {/* Dynamic Greeting */}
       <div className="w-full flex justify-center mb-4 px-2">
         <span className="text-base xs:text-lg sm:text-xl md:text-2xl font-semibold bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 bg-clip-text text-transparent drop-shadow-lg animate-fade-in text-center break-words">

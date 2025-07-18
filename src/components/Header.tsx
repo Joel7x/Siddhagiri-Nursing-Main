@@ -281,7 +281,7 @@ const Header = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="fixed top-0 left-0 w-full h-full z-[9999] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col items-center pt-24 px-6"
+                className="fixed top-0 left-0 w-screen h-screen z-[9999] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col items-center pt-24 px-6"
               >
                 <nav className="flex flex-col space-y-6 w-full max-w-xs mx-auto">
                   {navItems.map((item, index) => (
