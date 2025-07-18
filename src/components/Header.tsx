@@ -277,33 +277,29 @@ const Header = () => {
             {isMenuOpen && (
               <motion.div
                 key="mobile-menu"
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col items-end lg:hidden"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="fixed top-0 left-0 w-full h-full z-[9999] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col items-center pt-24 px-6"
               >
-                <div className="w-full max-w-xs p-6 pt-16 flex flex-col space-y-4">
-                  {[...navItems].map((item) => (
+                <nav className="flex flex-col space-y-6 w-full max-w-xs mx-auto">
+                  {navItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => scrollToSection(item.id)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-lg font-semibold transition-all duration-300
-                        ${activeSection === item.id ? 'text-blue-600 font-extrabold underline underline-offset-8 bg-blue-50 shadow' : 'text-gray-700 hover:text-blue-600'}`}
+                      className={`w-full text-lg font-semibold py-3 rounded-xl transition-all duration-200 ${activeSection === item.id ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
                     >
-                      <span className="text-xl">{item.icon}</span>
-                      <span>{item.label}</span>
+                      {item.icon} <span className="ml-2">{item.label}</span>
                     </button>
                   ))}
                   <button
                     onClick={handleAdminClick}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-xl text-lg font-semibold border-2 border-red-300 hover:border-red-500 text-red-600 mt-4"
+                    className="w-full text-lg font-semibold py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
                   >
-                    <span className="text-xl">🔐</span>
-                    <span>Admin</span>
+                    Admin Login
                   </button>
-                  <DateClockBadge />
-                </div>
+                </nav>
               </motion.div>
             )}
           </AnimatePresence>
