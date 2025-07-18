@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { GraduationCap, BookOpen, Users, Award, Calendar, FileText, Upload, User, Clock, MapPin, CheckCircle, AlertCircle, Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { supabase } from '../lib/supabase';
+import SuccessPopup from './SuccessPopup';
 
 const NursingCollege = () => {
   const [formData, setFormData] = useState({
@@ -35,11 +37,83 @@ const NursingCollege = () => {
     emergencyContactPhone: '',
     emergencyContactRelation: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Admission form submitted:', formData);
-    alert('Thank you for your application! We will contact you soon with further details.');
+    setIsSubmitting(true);
+
+    try {
+      // Validate required fields
+      if (!formData.gender) {
+        alert('Please select a gender');
+        return;
+      }
+
+      // Transform form data to match Supabase schema
+      const admissionData = {
+        full_name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        date_of_birth: formData.dateOfBirth,
+        gender: formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1).toLowerCase(), // Capitalize first letter
+        course: formData.course,
+        tenth_percentage: parseFloat(formData.tenthPercentage) || 0,
+        twelfth_percentage: parseFloat(formData.twelfthPercentage) || 0,
+        neet_score: formData.previousMedicalExperience ? parseInt(formData.previousMedicalExperience) : null,
+        address: `${formData.address}, ${formData.city}, ${formData.state} ${formData.pincode}`.trim(),
+        emergency_contact_name: formData.emergencyContactName,
+        emergency_contact_phone: formData.emergencyContactPhone,
+        motivation: formData.whyNursing
+      };
+
+      console.log('Submitting admission data:', admissionData);
+
+      const { data, error } = await supabase
+        .from('admission_forms')
+        .insert([admissionData]);
+
+      if (error) {
+        console.error('Error submitting admission form:', error);
+        alert('There was an error submitting your application. Please try again.');
+      } else {
+        console.log('Admission form submitted successfully:', data);
+        setShowSuccessPopup(true);
+        
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          dateOfBirth: '',
+          gender: '',
+          email: '',
+          phone: '',
+          address: '',
+          city: '',
+          state: '',
+          pincode: '',
+          tenthBoard: '',
+          tenthPercentage: '',
+          tenthYear: '',
+          twelfthBoard: '',
+          twelfthPercentage: '',
+          twelfthYear: '',
+          course: '',
+          preferredBatch: '',
+          previousMedicalExperience: '',
+          whyNursing: '',
+          emergencyContactName: '',
+          emergencyContactPhone: '',
+          emergencyContactRelation: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting admission form:', error);
+      alert('There was an error submitting your application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -77,11 +151,10 @@ const NursingCollege = () => {
   ];
 
   const courses = [
-    'Auxiliary Nurse Midwife (ANM) - 2 Years',
-    'General Nursing and Midwifery (GNM) - 3.5 Years',
-    'Bachelor of Science in Nursing (B.Sc Nursing) - 4 Years',
-    'Post Basic B.Sc Nursing - 2 Years',
-    'Master of Science in Nursing (M.Sc Nursing) - 2 Years'
+    'GNM Nursing',
+    'B.Sc. Nursing',
+    'P.B.B.Sc. Nursing',
+    'M.Sc. Nursing'
   ];
 
   // Nursing Education Quotes
@@ -131,27 +204,60 @@ const NursingCollege = () => {
     ]
   };
 
-  // ANM Nursing Course Details
-  const anmNursingDetails = {
+  // GNM Nursing Course Details
+  const gnmNursingDetails = {
+    seats: 30,
+    duration: '3.5 Years',
+    eligibility: '10+2 in any stream (preferably Science) with minimum 40% marks',
+    benefits: [
+      'Strong foundation in nursing and patient care',
+      'Extensive clinical exposure',
+      'Prepares for registration as a nurse and midwife',
+      'High employability in hospitals, clinics, and community health centers'
+    ],
+    futureScope: [
+      'Staff Nurse in hospitals and clinics',
+      'Community Health Nurse',
+      'Can pursue B.Sc. Nursing (Post Basic) for higher studies',
+      'Opportunities in government and private healthcare sectors'
+    ]
+  };
+
+  // P.B.B.Sc. Nursing Course Details
+  const pbbscNursingDetails = {
     seats: 20,
     duration: '2 Years',
-    ageLimit: '17 to 35 years',
-    gender: 'Female only (married or unmarried)',
-    eligibility: '10+2 in Arts, Commerce & Science from recognized Board',
-    detailedEligibility: [
-      'Minimum age: 17 years on or before 31st December of admission year',
-      'Maximum age: 35 years',
-      '10+2 in Arts (Mathematics, Physics, Chemistry, Biology, Biotechnology, Economics, Political Science, History, Geography, Business Studies, Accountancy, Home Science, Sociology, Psychology, Philosophy) and English Core/English Elective',
-      '10+2 in Science or Health care Science - Vocational stream',
-      'Students qualified in 10+2 Arts or Science from National Institute of Open School',
-      'Student shall be medically fit',
-      'Student shall be admitted once in a year'
+    eligibility: 'GNM with registration as RN & RM and 10+2 in any stream',
+    benefits: [
+      'Upgrade qualification for GNM diploma holders',
+      'Enhances theoretical and practical knowledge',
+      'Eligibility for teaching and administrative roles',
+      'Better career advancement opportunities'
     ],
-    importantDates: [
-      { event: 'Application Start', date: 'March 1, 2024' },
-      { event: 'Application End', date: 'June 30, 2024' },
-      { event: 'Entrance Exam', date: 'July 15, 2024' },
-      { event: 'Classes Begin', date: 'August 1, 2024' }
+    futureScope: [
+      'Staff Nurse/Senior Nurse',
+      'Nursing Tutor or Educator',
+      'Can pursue M.Sc. Nursing',
+      'Leadership roles in hospitals and academics'
+    ]
+  };
+
+  // M.Sc. Nursing Course Details
+  const mscNursingDetails = {
+    seats: 10,
+    duration: '2 Years',
+    eligibility: 'B.Sc. Nursing or P.B.B.Sc. Nursing with minimum 55% marks and 1 year experience',
+    benefits: [
+      'Advanced specialization in nursing',
+      'Opens doors to teaching, research, and leadership roles',
+      'Higher salary and job security',
+      'Eligibility for Ph.D. and further research'
+    ],
+    futureScope: [
+      'Nurse Educator/Professor',
+      'Nursing Researcher',
+      'Nursing Superintendent/Administrator',
+      'Specialist Nurse in chosen field'
     ]
   };
 
@@ -187,7 +293,7 @@ const NursingCollege = () => {
         }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         {/* Header */}
         <motion.div 
           className="text-center mb-16"
@@ -419,7 +525,7 @@ const NursingCollege = () => {
             </div>
           </div>
 
-          {/* ANM Nursing Program */}
+          {/* GNM Nursing Program */}
           <div className="bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 rounded-3xl p-8 shadow-2xl text-white relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
@@ -435,9 +541,75 @@ const NursingCollege = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <Award className="h-4 w-4 mr-2" />
-                  <span className="font-semibold">Foundation Program</span>
+                  <span className="font-semibold">GNM Nursing</span>
                 </motion.div>
-                <h3 className="text-3xl font-bold mb-2">Auxiliary Nurse Midwife (ANM)</h3>
+                <h3 className="text-3xl font-bold mb-2">GNM Nursing</h3>
+                <p className="text-white/90 text-lg">Essential 3.5-Year Nursing Program</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Seats */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Users className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-2xl font-bold mb-1">{gnmNursingDetails.seats}</div>
+                  <div className="text-white/90 text-sm font-medium">Available Seats</div>
+                </motion.div>
+
+                {/* Duration */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Clock className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-2xl font-bold mb-1">{gnmNursingDetails.duration}</div>
+                  <div className="text-white/90 text-sm font-medium">Course Duration</div>
+                </motion.div>
+
+                {/* Age Limit */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Calendar className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-xl font-bold mb-1">17 to 35 years</div>
+                  <div className="text-white/90 text-sm font-medium">Age Criteria</div>
+                </motion.div>
+
+                {/* Gender */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <User className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-lg font-bold mb-1">Male/Female</div>
+                  <div className="text-white/90 text-sm font-medium">Gender Eligibility</div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* P.B.B.Sc. Nursing Program */}
+          <div className="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 rounded-3xl p-8 shadow-2xl text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='40' cy='40' r='6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }} />
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <motion.div
+                  className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Award className="h-4 w-4 mr-2" />
+                  <span className="font-semibold">P.B.B.Sc. Nursing</span>
+                </motion.div>
+                <h3 className="text-3xl font-bold mb-2">P.B.B.Sc. Nursing</h3>
                 <p className="text-white/90 text-lg">Essential 2-Year Nursing Foundation Program</p>
               </div>
 
@@ -448,7 +620,7 @@ const NursingCollege = () => {
                   whileHover={{ scale: 1.02, y: -3 }}
                 >
                   <Users className="h-8 w-8 mx-auto mb-3" />
-                  <div className="text-2xl font-bold mb-1">{anmNursingDetails.seats}</div>
+                  <div className="text-2xl font-bold mb-1">{pbbscNursingDetails.seats}</div>
                   <div className="text-white/90 text-sm font-medium">Available Seats</div>
                 </motion.div>
 
@@ -458,7 +630,7 @@ const NursingCollege = () => {
                   whileHover={{ scale: 1.02, y: -3 }}
                 >
                   <Clock className="h-8 w-8 mx-auto mb-3" />
-                  <div className="text-2xl font-bold mb-1">{anmNursingDetails.duration}</div>
+                  <div className="text-2xl font-bold mb-1">{pbbscNursingDetails.duration}</div>
                   <div className="text-white/90 text-sm font-medium">Course Duration</div>
                 </motion.div>
 
@@ -468,7 +640,7 @@ const NursingCollege = () => {
                   whileHover={{ scale: 1.02, y: -3 }}
                 >
                   <Calendar className="h-8 w-8 mx-auto mb-3" />
-                  <div className="text-xl font-bold mb-1">{anmNursingDetails.ageLimit}</div>
+                  <div className="text-xl font-bold mb-1">17 to 35 years</div>
                   <div className="text-white/90 text-sm font-medium">Age Criteria</div>
                 </motion.div>
 
@@ -478,7 +650,73 @@ const NursingCollege = () => {
                   whileHover={{ scale: 1.02, y: -3 }}
                 >
                   <User className="h-8 w-8 mx-auto mb-3" />
-                  <div className="text-lg font-bold mb-1">Female Only</div>
+                  <div className="text-lg font-bold mb-1">Male/Female</div>
+                  <div className="text-white/90 text-sm font-medium">Gender Eligibility</div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* M.Sc. Nursing Program */}
+          <div className="bg-gradient-to-br from-pink-600 via-red-600 to-orange-600 rounded-3xl p-8 shadow-2xl text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='40' cy='40' r='6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }} />
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <motion.div
+                  className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Award className="h-4 w-4 mr-2" />
+                  <span className="font-semibold">M.Sc. Nursing</span>
+                </motion.div>
+                <h3 className="text-3xl font-bold mb-2">M.Sc. Nursing</h3>
+                <p className="text-white/90 text-lg">Advanced 2-Year Nursing Program</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Seats */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Users className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-2xl font-bold mb-1">{mscNursingDetails.seats}</div>
+                  <div className="text-white/90 text-sm font-medium">Available Seats</div>
+                </motion.div>
+
+                {/* Duration */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Clock className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-2xl font-bold mb-1">{mscNursingDetails.duration}</div>
+                  <div className="text-white/90 text-sm font-medium">Course Duration</div>
+                </motion.div>
+
+                {/* Age Limit */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <Calendar className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-xl font-bold mb-1">17 to 35 years</div>
+                  <div className="text-white/90 text-sm font-medium">Age Criteria</div>
+                </motion.div>
+
+                {/* Gender */}
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm p-6 rounded-2xl border border-white/30 text-center"
+                  whileHover={{ scale: 1.02, y: -3 }}
+                >
+                  <User className="h-8 w-8 mx-auto mb-3" />
+                  <div className="text-lg font-bold mb-1">Male/Female</div>
                   <div className="text-white/90 text-sm font-medium">Gender Eligibility</div>
                 </motion.div>
               </div>
@@ -486,7 +724,7 @@ const NursingCollege = () => {
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Course Information */}
           <div className="lg:col-span-1 space-y-6">
             {/* B.Sc Nursing Eligibility */}
@@ -520,7 +758,7 @@ const NursingCollege = () => {
               </div>
             </motion.div>
 
-            {/* ANM Nursing Eligibility */}
+            {/* GNM Nursing Eligibility */}
             <motion.div 
               className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
               initial={{ opacity: 0, x: -20 }}
@@ -530,25 +768,121 @@ const NursingCollege = () => {
             >
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2 text-green-600" />
-                ANM Nursing Eligibility
+                GNM Nursing Eligibility
               </h3>
               <div className="space-y-4">
                 <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
                   <h4 className="font-semibold text-green-800 mb-2">Gender & Age Requirements</h4>
                   <p className="text-green-700 text-sm leading-relaxed mb-2">
-                    <strong>Female only</strong> (married or unmarried) aged between 17 to 35 years as on 31/12/2021 for Academic Session 2021-24.
+                    <strong>Male/Female</strong> aged between 17 to 35 years as on 31/12/2021 for Academic Session 2021-24.
                   </p>
                 </div>
                 <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
                   <h4 className="font-semibold text-emerald-800 mb-2">Education Requirements</h4>
                   <p className="text-emerald-700 text-sm leading-relaxed">
-                    10+2 in Arts, Commerce & Science from recognized Board.
+                    10+2 in any stream (preferably Science) with minimum 40% marks.
                   </p>
                 </div>
                 <div className="bg-teal-50 border border-teal-200 p-4 rounded-xl">
-                  <h4 className="font-semibold text-teal-800 mb-2">Detailed Eligibility</h4>
+                  <h4 className="font-semibold text-teal-800 mb-2">Benefits</h4>
                   <ul className="text-teal-700 text-xs space-y-1">
-                    {anmNursingDetails.detailedEligibility.map((item, index) => (
+                    {gnmNursingDetails.benefits.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-amber-800 mb-2">Future Scope</h4>
+                  <ul className="text-amber-700 text-xs space-y-1">
+                    {gnmNursingDetails.futureScope.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* P.B.B.Sc. Nursing Eligibility */}
+            <motion.div 
+              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-purple-600" />
+                P.B.B.Sc. Nursing Eligibility
+              </h3>
+              <div className="space-y-4">
+                <div className="bg-purple-50 border border-purple-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-purple-800 mb-2">Gender & Age Requirements</h4>
+                  <p className="text-purple-700 text-sm leading-relaxed mb-2">
+                    <strong>Male/Female</strong> aged between 17 to 35 years as on 31/12/2021 for Academic Session 2021-24.
+                  </p>
+                </div>
+                <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-indigo-800 mb-2">Education Requirements</h4>
+                  <p className="text-indigo-700 text-sm leading-relaxed">
+                    GNM with registration as RN & RM and 10+2 in any stream.
+                  </p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-blue-800 mb-2">Benefits</h4>
+                  <ul className="text-blue-700 text-xs space-y-1">
+                    {pbbscNursingDetails.benefits.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-cyan-50 border border-cyan-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-cyan-800 mb-2">Future Scope</h4>
+                  <ul className="text-cyan-700 text-xs space-y-1">
+                    {pbbscNursingDetails.futureScope.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* M.Sc. Nursing Eligibility */}
+            <motion.div 
+              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-pink-600" />
+                M.Sc. Nursing Eligibility
+              </h3>
+              <div className="space-y-4">
+                <div className="bg-pink-50 border border-pink-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-pink-800 mb-2">Gender & Age Requirements</h4>
+                  <p className="text-pink-700 text-sm leading-relaxed mb-2">
+                    <strong>Male/Female</strong> aged between 17 to 35 years as on 31/12/2021 for Academic Session 2021-24.
+                  </p>
+                </div>
+                <div className="bg-red-50 border border-red-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-red-800 mb-2">Education Requirements</h4>
+                  <p className="text-red-700 text-sm leading-relaxed">
+                    B.Sc. Nursing or P.B.B.Sc. Nursing with minimum 55% marks and 1 year experience.
+                  </p>
+                </div>
+                <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-orange-800 mb-2">Benefits</h4>
+                  <ul className="text-orange-700 text-xs space-y-1">
+                    {mscNursingDetails.benefits.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl">
+                  <h4 className="font-semibold text-yellow-800 mb-2">Future Scope</h4>
+                  <ul className="text-yellow-700 text-xs space-y-1">
+                    {mscNursingDetails.futureScope.map((item, index) => (
                       <li key={index}>• {item}</li>
                     ))}
                   </ul>
@@ -561,7 +895,7 @@ const NursingCollege = () => {
               className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
             >
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -586,7 +920,7 @@ const NursingCollege = () => {
               className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
               viewport={{ once: true }}
             >
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -618,7 +952,7 @@ const NursingCollege = () => {
               className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
               viewport={{ once: true }}
             >
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -650,7 +984,7 @@ const NursingCollege = () => {
               className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-2xl text-white"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
               viewport={{ once: true }}
             >
               <h3 className="text-lg font-bold mb-4">Additional Information</h3>
@@ -661,7 +995,17 @@ const NursingCollege = () => {
                   <p>• Examination: As per MUHS, Nasik rules</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">ANM Nursing:</h4>
+                  <h4 className="font-semibold mb-1">GNM Nursing:</h4>
+                  <p>• Vacations & Holidays: As per MSBNPE, Mumbai</p>
+                  <p>• Examination: As per MSBNPE, Mumbai rules</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">P.B.B.Sc. Nursing:</h4>
+                  <p>• Vacations & Holidays: As per MSBNPE, Mumbai</p>
+                  <p>• Examination: As per MSBNPE, Mumbai rules</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">M.Sc. Nursing:</h4>
                   <p>• Vacations & Holidays: As per MSBNPE, Mumbai</p>
                   <p>• Examination: As per MSBNPE, Mumbai rules</p>
                 </div>
@@ -674,7 +1018,7 @@ const NursingCollege = () => {
           </div>
 
           {/* Admission Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 w-full" id="admission-form">
             <motion.div 
               className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-white/50"
               initial={{ opacity: 0, x: 20 }}
@@ -687,7 +1031,7 @@ const NursingCollege = () => {
                 Admission Application Form
               </h3>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 w-full">
                 {/* Personal Information */}
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -1054,17 +1398,36 @@ const NursingCollege = () => {
 
                 <motion.button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={isSubmitting}
+                  className={`w-full px-8 py-4 rounded-lg font-semibold transition-all duration-200 shadow-lg ${
+                    isSubmitting 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-xl'
+                  }`}
+                  whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                 >
-                  Submit Application
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Submitting Application...</span>
+                    </div>
+                  ) : (
+                    'Submit Application'
+                  )}
                 </motion.button>
               </form>
             </motion.div>
           </div>
         </div>
       </div>
+      
+      {/* Success Popup */}
+      <SuccessPopup
+        isVisible={showSuccessPopup}
+        onClose={() => setShowSuccessPopup(false)}
+        type="admission"
+      />
     </section>
   );
 };

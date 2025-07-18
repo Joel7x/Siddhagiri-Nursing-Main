@@ -142,7 +142,7 @@ const Services = () => {
         }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         {/* Enhanced Header */}
         <motion.div 
           className="text-center mb-16"
@@ -230,7 +230,7 @@ const Services = () => {
 
         {/* Enhanced Services Grid */}
         <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

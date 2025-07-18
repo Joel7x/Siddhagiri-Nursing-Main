@@ -3,8 +3,8 @@ import { Phone, MapPin, Clock, ArrowRight, Star, Users, Award } from 'lucide-rea
 import { motion } from 'framer-motion';
 
 const Hero = () => {
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
+  const scrollToAdmissionForm = () => {
+    const element = document.getElementById('admission-form');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -46,101 +46,83 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="pt-28 pb-16 bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 min-h-screen flex items-center relative overflow-hidden">
-      {/* Enhanced Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-32 -right-32 w-64 h-64 bg-gradient-to-br from-blue-200 to-cyan-300 rounded-full opacity-20 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-            x: [0, 30, 0],
-            y: [0, -20, 0]
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-br from-purple-200 to-pink-300 rounded-full opacity-20 blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-            x: [0, -30, 0],
-            y: [0, 20, 0]
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
-
-      {/* Floating Elements */}
-      <motion.div
-        className="absolute top-20 left-4 w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-2xl opacity-60 shadow-2xl"
-        variants={floatingVariants}
-        animate="animate"
-      />
-      <motion.div
-        className="absolute top-32 right-8 w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-60 shadow-2xl"
-        variants={floatingVariants}
-        animate="animate"
-        transition={{ delay: 1 }}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <section id="home" className="pt-28 pb-16 bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 min-h-screen flex flex-col items-center relative overflow-hidden">
+      {/* Simple Clean Background (no animated/blurred circles) */}
+      {/* Remove the animated/blurred gradient circles and floating elements */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full relative z-10">
         <motion.div 
-          className="grid lg:grid-cols-2 gap-12 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Content */}
           <div className="space-y-8">
-            <motion.div className="space-y-6" variants={itemVariants}>
-              <motion.div
-                className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-white/50"
-                whileHover={{ scale: 1.05 }}
-              >
-                <Star className="h-4 w-4 text-yellow-500 mr-2" />
-                <span className="text-sm font-semibold text-gray-700">Trusted Healthcare & Education Since 1999</span>
-              </motion.div>
-
-              <motion.h1 
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
-                variants={itemVariants}
-              >
-                <span className="text-gray-900">Your Health & Education,</span>
-                <motion.span 
-                  className="block bg-gradient-to-r from-blue-600 via-cyan-600 to-purple-600 bg-clip-text text-transparent"
-                  animate={{
-                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            {/* Modern Mission Statement */}
+            <div className="relative flex flex-col items-center justify-center mb-12">
+              {/* Decorative Background Elements */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-80 h-24 bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 blur-3xl opacity-20 rounded-full animate-pulse"></div>
+                <div className="absolute w-60 h-16 bg-gradient-to-r from-pink-400 via-red-400 to-orange-400 blur-2xl opacity-15 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+              </div>
+              
+              <div className="relative z-10 flex flex-col items-center text-center">
+                {/* Decorative Icon */}
+                <motion.div 
+                  className="mb-6 w-16 h-16 bg-gradient-to-br from-blue-500 via-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl"
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    scale: [1, 1.05, 1]
                   }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
+                  transition={{ 
+                    duration: 4, 
+                    repeat: Infinity, 
+                    ease: "easeInOut" 
                   }}
                 >
-                  Our Priority
-                </motion.span>
-              </motion.h1>
-              
-              <motion.p 
-                className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-2xl font-light"
-                variants={itemVariants}
-              >
-                Experience world-class healthcare and nursing education at Siddhagiri Institute. Our dedicated team provides comprehensive care and quality education with state-of-the-art facilities.
-              </motion.p>
-            </motion.div>
+                  <span className="text-2xl">🏥</span>
+                </motion.div>
+                
+                {/* Main Headline */}
+                <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-4 break-words">
+                  <span className="text-gray-800 drop-shadow-lg">Your Health &</span>
+                  <br />
+                  <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-gradient-x drop-shadow-lg">Education,</span>
+                  <br />
+                  <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent animate-gradient-x drop-shadow-lg">Our Priority</span>
+                </h1>
+                
+                {/* Animated Decorative Line */}
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-8 h-1 bg-gradient-to-r from-emerald-400 to-blue-400 rounded-full animate-pulse"></div>
+                  <motion.div 
+                    className="w-3 h-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full"
+                    animate={{ 
+                      scale: [1, 1.5, 1],
+                      rotate: [0, 180, 360]
+                    }}
+                    transition={{ 
+                      duration: 2, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                  ></motion.div>
+                  <div className="w-8 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                </div>
+                
+                {/* Subtitle */}
+                <p className="text-base sm:text-xl md:text-2xl text-gray-600 font-medium max-w-2xl leading-relaxed">
+                  Empowering lives through 
+                  <span className="text-blue-600 font-semibold mx-2">exceptional care</span> 
+                  and 
+                  <span className="text-purple-600 font-semibold mx-2">quality education</span>
+                </p>
+              </div>
+            </div>
 
             {/* Stats */}
             <motion.div 
-              className="grid grid-cols-3 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
               variants={itemVariants}
             >
               {[
@@ -208,7 +190,7 @@ const Hero = () => {
               variants={itemVariants}
             >
               <motion.button
-                onClick={scrollToContact}
+                onClick={scrollToAdmissionForm}
                 className="group bg-gradient-to-r from-blue-600 via-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
                 whileHover={{ 
                   scale: 1.02,
@@ -216,7 +198,7 @@ const Hero = () => {
                 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span>Schedule Appointment</span>
+                <span>Apply Now</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
               </motion.button>
               <motion.button
@@ -255,14 +237,36 @@ const Hero = () => {
                   ease: "easeInOut"
                 }}
               />
-              <motion.img
-                src="/COLLEGEBUILDING.jpeg"
-                alt="Siddhagiri Nursing Institute - College Building"
-                className="w-full h-80 lg:h-96 object-cover rounded-3xl shadow-xl border-2 border-white/50"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              />
+              {/* Beautiful Border Container */}
+              <div className="relative p-2">
+                {/* Outer Glow Effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 rounded-3xl opacity-30 blur-sm animate-pulse"></div>
+                
+                {/* Middle Border Layer */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 rounded-3xl opacity-60"></div>
+                
+                {/* Inner Border with Pattern */}
+                <div className="relative bg-gradient-to-r from-blue-300 via-cyan-300 to-purple-300 p-1 rounded-3xl">
+                  {/* Animated Border Pattern */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-3xl animate-pulse"></div>
+                  
+                  {/* Main Image */}
+                  <motion.img
+                    src="/COLLEGEBUILDING.jpeg"
+                    alt="Siddhagiri Nursing Institute - College Building"
+                    className="w-full h-80 lg:h-96 object-cover rounded-2xl shadow-2xl relative z-10"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.5 }}
+                  />
+                  
+                  {/* Corner Decorations */}
+                  <div className="absolute top-2 left-2 w-4 h-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full opacity-80 animate-pulse"></div>
+                  <div className="absolute top-2 right-2 w-4 h-4 bg-gradient-to-br from-cyan-500 to-purple-500 rounded-full opacity-80 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                  <div className="absolute bottom-2 left-2 w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full opacity-80 animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute bottom-2 right-2 w-4 h-4 bg-gradient-to-br from-pink-500 to-blue-500 rounded-full opacity-80 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                </div>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 via-transparent to-transparent rounded-3xl"></div>
               
               {/* Institute Name Overlay */}
@@ -309,61 +313,6 @@ const Hero = () => {
                   <span className="text-xs font-semibold">Nursing College</span>
                 </div>
               </motion.div>
-            </motion.div>
-            
-            {/* Enhanced Decorative elements */}
-            <motion.div 
-              className="absolute -top-6 -left-6 w-24 h-24 bg-gradient-to-br from-blue-400 via-cyan-400 to-purple-500 rounded-full opacity-40 z-0 blur-xl"
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 12,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <motion.div 
-              className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-cyan-400 via-purple-400 to-pink-500 rounded-full opacity-40 z-0 blur-xl"
-              animate={{
-                scale: [1.2, 1, 1.2],
-                rotate: [360, 180, 0],
-              }}
-              transition={{
-                duration: 15,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-
-            {/* Floating Achievement Badges */}
-            <motion.div
-              className="absolute -right-8 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/50"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 2 }}
-              whileHover={{ scale: 1.05, x: -5 }}
-            >
-              <div className="text-center">
-                <div className="text-lg">🏆</div>
-                <div className="text-xs font-bold text-gray-800">Excellence</div>
-                <div className="text-xs text-gray-600">Award</div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute -left-8 bottom-1/4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/50"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 2.2 }}
-              whileHover={{ scale: 1.05, x: 5 }}
-            >
-              <div className="text-center">
-                <div className="text-lg">📚</div>
-                <div className="text-xs font-bold text-gray-800">Quality</div>
-                <div className="text-xs text-gray-600">Education</div>
-              </div>
             </motion.div>
           </motion.div>
         </motion.div>

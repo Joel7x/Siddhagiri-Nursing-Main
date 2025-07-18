@@ -93,7 +93,7 @@ const About = () => {
         }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         {/* Enhanced Header */}
         <motion.div 
           className="text-center mb-16"
@@ -130,6 +130,21 @@ const About = () => {
             Siddhagiri Hospital has been serving the community with dedication, 
             compassion, and medical excellence for over two decades.
           </motion.p>
+
+          {/* Welcome and Institute History Block */}
+          <motion.div
+            className="mt-8 bg-blue-50/60 border-l-4 border-blue-400 px-6 py-5 max-w-3xl mx-auto rounded-xl shadow"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-2xl font-bold text-blue-700 mb-2">Welcome!</h3>
+            <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
+              The Siddhagiri Nursing Institute located at Kaneri, Kolhapur is a health care organization committed to establish necessary facilities to render quality health care of standards. Enhancements of the health care profession being one of the goals, College of Nursing to educate and prepare nursing professionals dedicated to patient care.<br/><br/>
+              The college of nursing, commissioned in 2011, is affiliated to the Maharashtra University of Health Sciences, Nashik. Siddhagiri Nursing Institute, Kaneri (SNIK) is part of Siddhagiri Gurukul Foundation. Siddhagiri Gurukul Foundation has started A.N.M Nursing from 2011 as Siddhagiri Nursing Institute. We have 150 bedded Siddhagiri Hospital & Research Centre which is Multispecialty hospital running from 2010.
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Medical Quote Section */}
@@ -182,7 +197,7 @@ const About = () => {
 
         {/* Enhanced Stats */}
         <motion.div 
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
